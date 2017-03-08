@@ -8,6 +8,10 @@
     }
 }(this, function () {
 
+function isArray(val) {
+    return typeof Array.isArray === 'function' ? Array.isArray(val) : Object.prototype.toString.call(val) === '[object Array]'
+}
+
 function isMergeableObject(val) {
     var nonNullObject = val && typeof val === 'object'
 
@@ -17,7 +21,7 @@ function isMergeableObject(val) {
 }
 
 function emptyTarget(val) {
-    return Array.isArray(val) ? [] : {}
+    return isArray(val) ? [] : {}
 }
 
 function cloneIfNecessary(value, optionsArgument) {
@@ -57,19 +61,19 @@ function mergeObject(target, source, optionsArgument) {
 }
 
 function deepmerge(target, source, optionsArgument) {
-    var array = Array.isArray(source);
+    var array = isArray(source);
     var options = optionsArgument || { arrayMerge: defaultArrayMerge }
     var arrayMerge = options.arrayMerge || defaultArrayMerge
 
     if (array) {
-        return Array.isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
+        return isArray(target) ? arrayMerge(target, source, optionsArgument) : cloneIfNecessary(source, optionsArgument)
     } else {
         return mergeObject(target, source, optionsArgument)
     }
 }
 
 deepmerge.all = function deepmergeAll(array, optionsArgument) {
-    if (!Array.isArray(array) || array.length < 2) {
+    if (!isArray(array) || array.length < 2) {
         throw new Error('first argument should be an array with at least two elements')
     }
 
